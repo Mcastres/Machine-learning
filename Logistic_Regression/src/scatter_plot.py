@@ -1,56 +1,52 @@
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
-from sklearn.preprocessing import Imputer
 import sys
 
-enumerate 
+def build_scatter_plot(dataset):
+    i = 6
+    dataset = pd.read_csv(dataset)
+    for i in range(6, 19):
+        x = dataset.iloc[:, [1, i, i + 1]].values
+
+        Gryffindor = [[],[]]
+        Hufflepuff = [[],[]]
+        Ravenclaw = [[],[]]
+        Slytherin = [[],[]]
+
+        for el in x:
+            if  el[0] == "Gryffindor":
+                Gryffindor[0].append(el[1])
+                Gryffindor[1].append(el[2])
+            elif el[0] == "Hufflepuff":
+                Hufflepuff[0].append(el[1])
+                Hufflepuff[1].append(el[2])
+            elif el[0] == "Ravenclaw":
+                Ravenclaw[0].append(el[1])
+                Ravenclaw[1].append(el[2])
+            elif el[0] == "Slytherin":
+                Slytherin[0].append(el[1])
+                Slytherin[1].append(el[2])
+            else:
+                return print("Invalid day of week")
+        plot_scatter(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset)
+
+def plot_scatter(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset):
+    n_bins = 25
+
+    plt.scatter(Gryffindor[0], Gryffindor[1], alpha=0.5)
+    plt.scatter(Hufflepuff[0], Hufflepuff[1], alpha=0.5)
+    plt.scatter(Ravenclaw[0], Ravenclaw[1], alpha=0.5)
+    plt.scatter(Slytherin[0], Slytherin[1], alpha=0.5)
+    plt.title(dataset.columns.values[i] + " " + dataset.columns.values[i+1])
+
+    plt.show()
 
 def main():
     if len(sys.argv) != 2:
         print("Please provide just one dataset")
         exit(0)
-    # feature = int(sys.argv[2])
-    # for i in range(6, 19):
-    i = 6
-    dataset = pd.read_csv(sys.argv[1])
-    x = dataset.iloc[:, [1, i, i + 1]].values
-    # y = dataset.iloc[:, 1].values
-    # imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
-    # imputer = imputer.fit(x)
-    # x = imputer.transform(x)
-    HogwartsHouse1 = [[],[]]
-    HogwartsHouse2 = [[],[]]
-    HogwartsHouse3 = [[],[]]
-    HogwartsHouse4 = [[],[]]
-    
-    for el in x:
-        if  el[0] == "Gryffindor":
-            HogwartsHouse1[0].append(el[1])
-            HogwartsHouse1[1].append(el[2])
-        elif el[0] == "Hufflepuff":
-            HogwartsHouse2[0].append(el[1])
-            HogwartsHouse2[1].append(el[2])            
-        elif el[0] == "Ravenclaw":
-            HogwartsHouse3[0].append(el[1])
-            HogwartsHouse3[1].append(el[2])
-        elif el[0] == "Slytherin":
-            HogwartsHouse4[0].append(el[1])
-            HogwartsHouse4[1].append(el[2])
-        else:
-            return print("Invalid day of week")
 
-    n_bins = 25
-    # print("salut " + str(HogwartsHouse1))
-    # print("ok " + str(HogwartsHouse1[1]))
-    plt.scatter(HogwartsHouse1[0], HogwartsHouse1[1], alpha=0.5)
-    plt.scatter(HogwartsHouse2[0], HogwartsHouse2[1], alpha=0.5)
-    plt.scatter(HogwartsHouse3[0], HogwartsHouse3[1], alpha=0.5)
-    plt.scatter(HogwartsHouse4[0], HogwartsHouse4[1], alpha=0.5)
-    plt.title(dataset.columns.values[i] + dataset.columns.values[i+1])
-    # plt.legend(loc='upper right')
-    # print(i)
-    plt.show()
+    build_scatter_plot(sys.argv[1])
 
 if __name__ == "__main__":
     main()
