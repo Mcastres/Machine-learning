@@ -1,12 +1,24 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+from sklearn.preprocessing import Imputer
+import numpy as np
 import sys
 
 def build_pair_plot(dataset):
     dataset = pd.read_csv(dataset)
+    subjects = []
+    d = {}
+    Gryffindor_house = []
+    Hufflepuff_house = []
+    Ravenclaw_house = []
+    Slytherin_house = []
+
     for i in range(6, 19):
         x = dataset.iloc[:, [1, i]].values
+        imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
+        imputer = imputer.fit(x[:, [1]])
+        x[:, [1]] = imputer.transform(x[:, [1]])
 
         Gryffindor  = []
         Hufflepuff  = []
@@ -24,13 +36,14 @@ def build_pair_plot(dataset):
                 Slytherin.append(el[1])
             else:
                 return print("WTF")
-        plot_pair(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset)
+        subjects = dataset.columns.values[i]
+        d[dataset.columns.values[i]] = Gryffindor + Hufflepuff + Ravenclaw + Slytherin
+    d['Houses'] = ['Gryffindor' for s in range(0, len(Gryffindor))]  + ['Hufflepuff' for s in range(0, len(Hufflepuff))] + ['Ravenclaw' for s in range(0, len(Ravenclaw))] + ['Slytherin' for s in range(0, len(Slytherin))]
+    df = pd.DataFrame(data=d)
+    plot_pair(df)
 
-def plot_pair(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset):
-    sns.pairplot(pd.DataFrame(Gryffindor))
-    sns.pairplot(pd.DataFrame(Hufflepuff))
-    sns.pairplot(pd.DataFrame(Ravenclaw))
-    sns.pairplot(pd.DataFrame(Slytherin))
+def plot_pair(df):
+    sns.pairplot(df, palette="husl", hue="Houses", height=2)
     plt.show()
 
 def main():

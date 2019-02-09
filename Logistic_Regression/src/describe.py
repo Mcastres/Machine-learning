@@ -11,7 +11,7 @@ def Mean(data):
     return sum(data) / len(data)
 
 def Std(data, mean):
-    return math.sqrt(sum(pow(x-mean,2) for x in data) / len(data)) 
+    return math.sqrt(sum(pow(x-mean,2) for x in data) / len(data))
 
 def Quartil(data, percentage):
     return sorted(data).values[int(len(data) * percentage)]

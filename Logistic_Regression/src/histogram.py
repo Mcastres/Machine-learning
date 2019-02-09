@@ -26,11 +26,11 @@ def build_histogram(dataset):
         plot_histogram(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset)
 
 def plot_histogram(Gryffindor, Hufflepuff, Ravenclaw, Slytherin, i, dataset):
-    n_bins = 25
-    plt.hist(Gryffindor, bins=n_bins, alpha=0.5, label="Gryffindor")
-    plt.hist(Hufflepuff, bins=n_bins, alpha=0.5, label="Hufflepuff")
-    plt.hist(Ravenclaw, bins=n_bins, alpha=0.5, label="Ravenclaw")
-    plt.hist(Slytherin, bins=n_bins, alpha=0.5, label="Slytherin")
+    n_bins = 100
+    plt.hist(Gryffindor, bins=n_bins, alpha=0.5, label="Gryffindor", density=True)
+    plt.hist(Hufflepuff, bins=n_bins, alpha=0.5, label="Hufflepuff", density=True)
+    plt.hist(Ravenclaw, bins=n_bins, alpha=0.5, label="Ravenclaw", density=True)
+    plt.hist(Slytherin, bins=n_bins, alpha=0.5, label="Slytherin", density=True)
     plt.title(dataset.columns.values[i])
     plt.legend(loc='upper right')
     plt.show()
