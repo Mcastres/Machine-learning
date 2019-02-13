@@ -59,8 +59,6 @@ def workerSMV(index ,y_copy, X, learning_rate, dic):
             Y_i = Y[i:i+batch_size]
             h = sigmoid(X_i.dot(w))
             cost = loss(h, Y_i, m)
-            # print("WHAT")
-            tmpCost = cost
             w -= learning_rate * ((h - Y_i).dot(X_i) / m)
             if (iter % 1000 == 0):
                 print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
@@ -68,6 +66,8 @@ def workerSMV(index ,y_copy, X, learning_rate, dic):
 
 class LogisticRegression(object):
 
+    def create_csv_file(data):
+        data.to_csv("weights", encoding='utf-8')
 
     def __init__(self, learning_rate=0.001, n_iter=50):
         self.learning_rate = learning_rate
@@ -81,7 +81,7 @@ class LogisticRegression(object):
         jobs = []
         for i in np.unique(y):
             y_copy = np.array([1 if c == i else 0 for c in y])
-            p = multiprocessing.Process(target=workerSMV, args=(i, y_copy, np.copy(X), self.learning_rate, dic))
+            p = multiprocessing.Process(target=worker, args=(i, y_copy, np.copy(X), self.learning_rate, dic))
             jobs.append(p)
             p.start()
         for proc in jobs:
