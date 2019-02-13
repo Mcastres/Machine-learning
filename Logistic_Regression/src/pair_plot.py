@@ -9,11 +9,6 @@ def build_pair_plot(dataset):
     dataset = pd.read_csv(dataset)
     subjects = []
     d = {}
-    Gryffindor_house = []
-    Hufflepuff_house = []
-    Ravenclaw_house = []
-    Slytherin_house = []
-
     for i in range(6, 19):
         x = dataset.iloc[:, [1, i]].values
         imputer = Imputer(missing_values = 'NaN', strategy = 'mean', axis = 0)
