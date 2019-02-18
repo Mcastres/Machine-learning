@@ -24,44 +24,43 @@ def loss( h , y, m):
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-def worker(index ,y_copy, X, learning_rate, dic):
-    timeout = time.time() + 30
+def gd(index ,y_copy, X, learning_rate, dic):
     m = y_copy.shape[0]
     w = np.ones(X.shape[1])
-    tmpCost = 0.0
-    cost = 0
+
     iter = 0
-    while (True):
+    cost = 0
+    for _ in range(10000):
         iter += 1
         h = sigmoid(X.dot(w))
-        cost = loss(h, y_copy, m)
-        if (cost <= 0.1 ) or  (tmpCost == cost) or (time.time() > timeout):
-            break
-        tmpCost = cost
         w -= learning_rate * ((h - y_copy).dot(X) / m)
         if (iter % 1000 == 0):
+            cost = loss(h, y_copy, m)
             print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
     dic[index] = w
 
-def workerSMV(index ,y_copy, X, learning_rate, dic):
+def mini_batch_sgd(index ,y_copy, X, learning_rate, dic):
     m = y_copy.shape[0]
     w = np.ones(X.shape[1])
-    batch_size = 100
+    print(w)
+    exit(0)
+    batch_size = 64
     cost = 0
     iter = 0
-    for ii in range(10):
+    for _ in range(1000):
         indices = np.random.permutation(m)
         X = X[indices]
         Y = y_copy[indices]
-        for i in range(0,m,batch_size):
-            iter += 1
-            X_i = X[i:i+batch_size]
-            Y_i = Y[i:i+batch_size]
-            h = sigmoid(X_i.dot(w))
-            cost = loss(h, Y_i, m)
-            w -= learning_rate * ((h - Y_i).dot(X_i) / m)
-            if (iter % 1000 == 0):
-                print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
+        iter += 1
+        i = np.random.randint(0, y_copy.shape[0] - batch_size)
+        print(i)
+        X_i = X[i:i+batch_size]
+        Y_i = Y[i:i+batch_size]
+        h = sigmoid(X_i.dot(w))
+        cost = loss(h, Y_i, m)
+        w -= learning_rate * ((h - Y_i).dot(X_i) / m)
+        if (iter % 1000 == 0):
+            print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
     dic[index] = w
 
 class LogisticRegression(object):
@@ -81,7 +80,7 @@ class LogisticRegression(object):
         jobs = []
         for i in np.unique(y):
             y_copy = np.array([1 if c == i else 0 for c in y])
-            p = multiprocessing.Process(target=worker, args=(i, y_copy, np.copy(X), self.learning_rate, dic))
+            p = multiprocessing.Process(target=mini_batch_sgd, args=(i, y_copy, np.copy(X), self.learning_rate, dic))
             jobs.append(p)
             p.start()
         for proc in jobs:
@@ -115,4 +114,5 @@ logreg.fit(X_train, y_train)
 y_pred = logreg.predict(X_test)
 
 from sklearn.metrics import accuracy_score
+print(logreg.getW())
 print(accuracy_score(y_test, y_pred))
