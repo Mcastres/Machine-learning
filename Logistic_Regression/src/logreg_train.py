@@ -42,8 +42,6 @@ def gd(index ,y_copy, X, learning_rate, dic):
 def mini_batch_sgd(index ,y_copy, X, learning_rate, dic):
     m = y_copy.shape[0]
     w = np.ones(X.shape[1])
-    print(w)
-    exit(0)
     batch_size = 64
     cost = 0
     iter = 0
@@ -58,6 +56,21 @@ def mini_batch_sgd(index ,y_copy, X, learning_rate, dic):
         Y_i = Y[i:i+batch_size]
         h = sigmoid(X_i.dot(w))
         cost = loss(h, Y_i, m)
+        w -= learning_rate * ((h - Y_i).dot(X_i) / m)
+        if (iter % 1000 == 0):
+            print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
+    dic[index] = w
+
+def sgd(index, y_copy, X, learning_rate, dic):
+    m = y_copy.shape[0]
+    w = np.ones(X.shape[1])
+    cost = 0
+    iter = 0
+    for _ in range(10000):
+        i = np.random.randint(0, y_copy.shape[0])
+        X_i = X[i]
+        Y_i = Y[i]
+        h = sigmoid(h, Y_i, m)
         w -= learning_rate * ((h - Y_i).dot(X_i) / m)
         if (iter % 1000 == 0):
             print(str(iter) + " cost : " + str(cost) + " index : " + str(index))
